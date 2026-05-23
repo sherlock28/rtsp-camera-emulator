@@ -1,0 +1,18 @@
+services:
+  mediamtx:
+    image: bluenviron/mediamtx:latest
+    container_name: mediamtx
+    ports:
+      - "8554:8554"
+    restart: unless-stopped
+
+  video-stream:
+    image: jrottenberg/ffmpeg:4.4-ubuntu
+    container_name: ffmpeg-stream
+    depends_on:
+      - mediamtx
+    volumes:
+      - ./videos:/videos
+    command: >
+      -re -stream_loop -1 -i /videos/demo.mp4
+      -c copy -f rtsp rtsp://mediamtx:8554/mystream
