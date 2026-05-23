@@ -93,3 +93,17 @@ services:
 - Emular cámaras para pruebas de integración con sistemas de video.
 - Validar pipelines de ingestión RTSP sin depender de hardware real.
 - Simular múltiples cámaras con distintos videos.
+
+---
+
+## Documentación
+
+La documentación completa está generada con [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) y puede levantarse localmente con Docker, sin instalar nada extra:
+
+```bash
+docker compose up docs
+```
+
+El sitio estará disponible en: `http://localhost:8000`
+
+> El servicio `docs` no arranca junto a los demás servicios. Solo se levanta cuando se lo llama explícitamente por nombre.
