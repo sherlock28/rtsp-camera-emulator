@@ -16,3 +16,13 @@ services:
     command: >
       -re -stream_loop -1 -i /videos/demo.mp4
       -c copy -f rtsp rtsp://mediamtx:8554/mystream
+
+  docs:
+    image: squidfunk/mkdocs-material:latest
+    container_name: mkdocs-docs
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/docs
+    profiles:
+      - docs
