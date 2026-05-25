@@ -1,10 +1,12 @@
 services:
   mediamtx:
     image: bluenviron/mediamtx:latest
+    restart: unless-stopped
     container_name: mediamtx
+    environment:
+      - MTX_PROTOCOLS=tcp
     ports:
       - "8554:8554"
-    restart: unless-stopped
 
   video-stream:
     image: jrottenberg/ffmpeg:4.4-ubuntu
@@ -12,10 +14,12 @@ services:
     depends_on:
       - mediamtx
     volumes:
-      - ./videos:/videos
+      - ${VIDEO_SOURCE}:/videos
     command: >
-      -re -stream_loop -1 -i /videos/demo.mp4
-      -c copy -f rtsp rtsp://mediamtx:8554/mystream
+      -re -stream_loop -1 -i /videos/${VIDEO_FILE}
+      -map 0:v:0 -map 0:a:0 -c:v ${VIDEO_CODEC} -preset veryfast
+      -c:a aac -ac 2 -f
+      rtsp rtsp://mediamtx:8554/${STREAM_NAME}
 
   docs:
     image: squidfunk/mkdocs-material:latest
