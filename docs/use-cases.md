@@ -47,10 +47,10 @@ Reproduce distintos videos simultáneamente para simular un entorno multicámara
 | Stream | Video | URL |
 |---|---|---|
 | Cámara 1 — Entrada | `entrada.mp4` | `rtsp://<IP>:8554/camera1` |
-| Cámara 2 — Pasillo | `pasillo.mp4` | `rtsp://<IP>:8554/camera2` |
-| Cámara 3 — Parking | `parking.mp4` | `rtsp://<IP>:8554/camera3` |
+| Cámara 2 — Pasillo | `pasillo.mkv` | `rtsp://<IP>:8554/camera2` |
+| Cámara 3 — Parking | `parking.avi` | `rtsp://<IP>:8554/camera3` |
 
-Consulta la sección [Configuración → Múltiples streams](configuration.md#multiples-streams-varias-camaras) para ver el `docker-compose.yml` correspondiente.
+Consulta la sección [Configuración → Múltiples streams](configuration.md#multiples-streams-varias-camaras) para ver el `docker-compose.yml` con variables de entorno por servicio.
 
 ---
 
@@ -64,4 +64,6 @@ services:
     image: bluenviron/mediamtx:latest
     ports:
       - 8554:8554
+    environment:
+      - MTX_PROTOCOLS=tcp
 ```

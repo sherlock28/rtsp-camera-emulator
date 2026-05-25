@@ -8,19 +8,20 @@ Este proyecto permite **emular una cámara IP** utilizando [MediaMTX](https://gi
 
 ```mermaid
 graph LR
-    A[demo.mp4] -->|FFmpeg lee y reenvía| B(MediaMTX RTSP Server)
-    B -->|rtsp://host:8554/mystream| C[VLC / ffprobe / cliente RTSP]
+    E[".env\nVIDEO_FILE / VIDEO_CODEC\nSTREAM_NAME / VIDEO_SOURCE"] --> F
+    F["VIDEO_FILE\n(.mp4 / .mkv / .avi)"] -->|"FFmpeg lee, recodifica H.264/AAC"| B(MediaMTX RTSP Server)
+    B -->|"rtsp://host:8554/STREAM_NAME"| C[VLC / ffprobe / cliente RTSP]
 ```
 
 | Servicio | Descripción |
 |---|---|
-| `mediamtx` | Servidor RTSP que recibe y redistribuye el stream, expuesto en el puerto `8554`. |
-| `video-stream` | Contenedor FFmpeg que lee `demo.mp4` en bucle y lo publica en MediaMTX. |
+| `mediamtx` | Servidor RTSP que recibe y redistribuye el stream, expuesto en el puerto `8554` con TCP forzado. |
+| `video-stream` | Contenedor FFmpeg que lee el archivo configurado en `.env` en bucle, lo recodifica a H.264/AAC y lo publica en MediaMTX. |
 
 La URL resultante del stream es:
 
 ```
-rtsp://<IP_de_tu_maquina>:8554/mystream
+rtsp://<IP_de_tu_maquina>:8554/<STREAM_NAME>
 ```
 
 !!! info "Reemplaza `<IP_de_tu_maquina>`"
@@ -31,4 +32,5 @@ rtsp://<IP_de_tu_maquina>:8554/mystream
 ## Requisitos
 
 - [Docker](https://docs.docker.com/get-docker/) y [Docker Compose](https://docs.docker.com/compose/) instalados.
-- Un archivo de video `demo.mp4` colocado en la carpeta `./videos`.
+- Un archivo de video (`.mp4`, `.mkv` o `.avi`) colocado en la carpeta `./videos`.
+- Un archivo `.env` en la raíz del proyecto con las variables `VIDEO_SOURCE`, `VIDEO_FILE`, `VIDEO_CODEC` y `STREAM_NAME`.
