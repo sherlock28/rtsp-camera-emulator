@@ -17,7 +17,7 @@ services:
       - ${VIDEO_SOURCE}:/videos
     command: >
       -re -stream_loop -1 -i /videos/${VIDEO_FILE}
-      -map 0:v:0 -map 0:a:0 -c:v ${VIDEO_CODEC} -preset veryfast
+      -map 0:v:0 -map 0:a:0? -c:v ${VIDEO_CODEC} -preset veryfast
       -c:a aac -ac 2 -f
       rtsp rtsp://mediamtx:8554/${STREAM_NAME}
 
