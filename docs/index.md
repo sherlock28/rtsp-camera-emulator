@@ -34,3 +34,6 @@ rtsp://<IP_de_tu_maquina>:8554/<STREAM_NAME>
 - [Docker](https://docs.docker.com/get-docker/) y [Docker Compose](https://docs.docker.com/compose/) instalados.
 - Un archivo de video (`.mp4`, `.mkv` o `.avi`) colocado en la carpeta `./videos`.
 - Un archivo `.env` en la raíz del proyecto con las variables `VIDEO_SOURCE`, `VIDEO_FILE`, `VIDEO_CODEC` y `STREAM_NAME`.
+
+!!! tip "Varias cámaras"
+    También puedes simular varias cámaras a la vez, cada una con su propio video y ruta RTSP, usando `docker-compose.multi-camera.yml`. Ver [Configuración → Múltiples streams](configuration.md#multiples-streams-varias-camaras).

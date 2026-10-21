@@ -44,13 +44,33 @@ Prueba pipelines de procesamiento de video (reconocimiento facial, detección de
 
 Reproduce distintos videos simultáneamente para simular un entorno multicámara. Útil para pruebas de carga o escenarios de monitoreo distribuido.
 
-| Stream | Video | URL |
-|---|---|---|
-| Cámara 1 — Entrada | `entrada.mp4` | `rtsp://<IP>:8554/camera1` |
-| Cámara 2 — Pasillo | `pasillo.mkv` | `rtsp://<IP>:8554/camera2` |
-| Cámara 3 — Parking | `parking.avi` | `rtsp://<IP>:8554/camera3` |
+Cada cámara se define con dos variables propias en el `.env`: el video que transmite y la ruta RTSP donde publica.
 
-Consulta la sección [Configuración → Múltiples streams](configuration.md#multiples-streams-varias-camaras) para ver el `docker-compose.yml` con variables de entorno por servicio.
+```env title=".env"
+VIDEO_SOURCE=./videos
+VIDEO_CODEC=libx264
+
+CAMERA1_FILE=entrada.mp4
+CAMERA1_STREAM=entrada
+
+CAMERA2_FILE=pasillo.mkv
+CAMERA2_STREAM=pasillo
+
+CAMERA3_FILE=parking.avi
+CAMERA3_STREAM=parking
+```
+
+```bash
+docker compose -f docker-compose.multi-camera.yml up -d
+```
+
+| Cámara | Video (`CAMERAn_FILE`) | URL (`CAMERAn_STREAM`) |
+|---|---|---|
+| Cámara 1 — Entrada | `entrada.mp4` | `rtsp://<IP>:8554/entrada` |
+| Cámara 2 — Pasillo | `pasillo.mkv` | `rtsp://<IP>:8554/pasillo` |
+| Cámara 3 — Parking | `parking.avi` | `rtsp://<IP>:8554/parking` |
+
+Consulta [Configuración → Múltiples streams](configuration.md#multiples-streams-varias-camaras) para ver cómo funciona `docker-compose.multi-camera.yml`, cómo agregar más cámaras y los errores comunes.
 
 ---
 

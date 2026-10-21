@@ -1,0 +1,76 @@
+services:
+  mediamtx:
+    image: bluenviron/mediamtx:latest
+    restart: unless-stopped
+    container_name: mediamtx
+    environment:
+      - MTX_PROTOCOLS=tcp
+    ports:
+      - "8554:8554"
+
+  camera-1:
+    image: jrottenberg/ffmpeg:4.4-ubuntu
+    container_name: camera1
+    depends_on:
+      - mediamtx
+    volumes:
+      - ${VIDEO_SOURCE}:/videos
+    environment:
+      - VIDEO_FILE=${CAMERA1_FILE}
+      - VIDEO_CODEC=${VIDEO_CODEC}
+      - STREAM_NAME=${CAMERA1_STREAM}
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >
+        ffmpeg -re -stream_loop -1 -i "/videos/$$VIDEO_FILE"
+        -map 0:v:0 -map "0:a:0?" -c:v "$$VIDEO_CODEC" -preset veryfast
+        -c:a aac -ac 2 -f
+        rtsp "rtsp://mediamtx:8554/$$STREAM_NAME"
+
+  camera-2:
+    image: jrottenberg/ffmpeg:4.4-ubuntu
+    container_name: camera2
+    depends_on:
+      - mediamtx
+    volumes:
+      - ${VIDEO_SOURCE}:/videos
+    environment:
+      - VIDEO_FILE=${CAMERA2_FILE}
+      - VIDEO_CODEC=${VIDEO_CODEC}
+      - STREAM_NAME=${CAMERA2_STREAM}
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >
+        ffmpeg -re -stream_loop -1 -i "/videos/$$VIDEO_FILE"
+        -map 0:v:0 -map "0:a:0?" -c:v "$$VIDEO_CODEC" -preset veryfast
+        -c:a aac -ac 2 -f
+        rtsp "rtsp://mediamtx:8554/$$STREAM_NAME"
+
+  camera-3:
+    image: jrottenberg/ffmpeg:4.4-ubuntu
+    container_name: camera3
+    depends_on:
+      - mediamtx
+    volumes:
+      - ${VIDEO_SOURCE}:/videos
+    environment:
+      - VIDEO_FILE=${CAMERA3_FILE}
+      - VIDEO_CODEC=${VIDEO_CODEC}
+      - STREAM_NAME=${CAMERA3_STREAM}
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >
+        ffmpeg -re -stream_loop -1 -i "/videos/$$VIDEO_FILE"
+        -map 0:v:0 -map "0:a:0?" -c:v "$$VIDEO_CODEC" -preset veryfast
+        -c:a aac -ac 2 -f
+        rtsp "rtsp://mediamtx:8554/$$STREAM_NAME"
+
+  docs:
+    image: squidfunk/mkdocs-material:latest
+    container_name: mkdocs-docs
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/docs
+    profiles:
+      - docs

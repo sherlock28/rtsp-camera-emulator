@@ -86,7 +86,37 @@ El video se reproducirá como si fuera una cámara IP.
 - El video se recodifica a **H.264/AAC** por defecto para máxima compatibilidad con VLC y clientes RTSP. Esto consume más CPU que `-c copy`, pero evita problemas de codec.
 - Para usar H.265 basta con cambiar `VIDEO_CODEC=libx265` en el `.env`. Verificar que el cliente receptor soporte H.265.
 - Si el video es muy corto, conviene usar uno más largo (1–2 minutos) o un patrón de prueba infinito.
-- Se pueden definir múltiples streams duplicando el servicio `video-stream` con variables de entorno distintas por servicio.
+- Para simular varias cámaras, usar `docker-compose.multi-camera.yml` (ver [Múltiples cámaras](#múltiples-cámaras)).
+
+## Múltiples cámaras
+
+`docker-compose.multi-camera.yml` levanta tres cámaras, cada una con su propio video y ruta RTSP. Cada cámara toma sus valores de **variables propias en el `.env`**:
+
+```env
+VIDEO_SOURCE=./videos
+VIDEO_CODEC=libx264
+
+CAMERA1_FILE=camera1.mp4
+CAMERA1_STREAM=camera1
+
+CAMERA2_FILE=camera2.mp4
+CAMERA2_STREAM=camera2
+
+CAMERA3_FILE=camera3.mp4
+CAMERA3_STREAM=camera3
+```
+
+```bash
+docker compose -f docker-compose.multi-camera.yml up -d
+```
+
+Resultado: `rtsp://<IP_de_tu_maquina>:8554/camera1`, `/camera2` y `/camera3`.
+
+> **Importante:** no alcanza con duplicar `video-stream` y poner valores distintos en `environment:`. Compose resuelve `${VIDEO_FILE}` y `${STREAM_NAME}` del `command` con el `.env` **antes** de crear el contenedor, así que todas las copias usarían el mismo video y la misma ruta. Por eso `docker-compose.multi-camera.yml` ejecuta el comando con `/bin/sh -c` y usa `$$VIDEO_FILE` / `$$STREAM_NAME`, que se resuelven dentro de cada contenedor.
+
+> `docker-compose.yml` y `docker-compose.multi-camera.yml` comparten el contenedor `mediamtx` y el puerto `8554`: bajar uno antes de levantar el otro.
+
+Detalles, cómo agregar más cámaras y errores comunes: ver la sección *Configuración → Múltiples streams* de la documentación.
 
 ## Ejemplo de configuración
 
@@ -121,7 +151,7 @@ services:
       - ${VIDEO_SOURCE}:/videos
     command: >
       -re -stream_loop -1 -i /videos/${VIDEO_FILE}
-      -map 0:v:0 -map 0:a:0 -c:v ${VIDEO_CODEC} -preset veryfast
+      -map 0:v:0 -map 0:a:0? -c:v ${VIDEO_CODEC} -preset veryfast
       -c:a aac -ac 2 -f
       rtsp rtsp://mediamtx:8554/${STREAM_NAME}
 ```

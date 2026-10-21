@@ -26,6 +26,7 @@ theme:
     - search.suggest
     - search.highlight
     - content.code.copy
+    - content.code.annotate
   icon:
     repo: fontawesome/brands/github
 

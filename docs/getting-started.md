@@ -96,3 +96,11 @@ El video se reproducirá como si fuera una cámara IP en vivo.
 ```bash
 docker compose down
 ```
+
+---
+
+## Siguiente paso: varias cámaras
+
+Esta guía levanta **una** cámara. Para simular varias, cada una con su propio video y `STREAM_NAME`, usa `docker-compose.multi-camera.yml` y define variables por cámara en el `.env` (`CAMERA1_FILE`, `CAMERA1_STREAM`, ...).
+
+Ver [Configuración → Múltiples streams](configuration.md#multiples-streams-varias-camaras).
